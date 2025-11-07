@@ -11,11 +11,11 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class GenerateTreeCommand implements CommandExecutor {
-    private final BlockPlacer placer;
+    private final WorldData world_data;
     private final BlockNotifier notifier;
 
-    public GenerateTreeCommand(BlockPlacer placer, BlockNotifier notifier) {
-        this.placer = placer;
+    public GenerateTreeCommand(WorldData world_data, BlockNotifier notifier) {
+        this.world_data = world_data;
         this.notifier = notifier;
     }
 
@@ -27,7 +27,7 @@ public class GenerateTreeCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
 
-        PositionDecider decider = new PositionDecider(null, placer, null, player.getLocation().toVector());
+        PositionDecider decider = new PositionDecider(null, world_data, null, player.getLocation().toVector());
 
         FileBuilder builder = new FileBuilder(decider, notifier);
         builder.start();

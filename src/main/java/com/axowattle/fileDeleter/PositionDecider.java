@@ -77,7 +77,7 @@ public class PositionDecider {
     }
 
     private final Settings settings;
-    private final BlockPlacer placer;
+    private final WorldData world_data;
     private final FileEnumerator enumerator;
     private Set<Vector> unallowed_positions;
 
@@ -86,11 +86,11 @@ public class PositionDecider {
     private int path_depth;
 
 
-    public PositionDecider(Settings settings, BlockPlacer placer, FileEnumerator enumerator, Vector initial_position) {
+    public PositionDecider(Settings settings, WorldData world_data, FileEnumerator enumerator, Vector initial_position) {
         if (settings != null) this.settings = settings;
         else this.settings = new Settings();
 
-        this.placer = placer;
+        this.world_data = world_data;
         this.enumerator = enumerator;
         this.path_depth = 0;
         unallowed_positions = new HashSet<>();
@@ -131,7 +131,7 @@ public class PositionDecider {
         match_directories(file.getParent());
 
         Vector placed_position = current_path.fetch_position();
-        placer.add_block(placed_position, current_path.material, file.toString());
+        world_data.add_block(placed_position, current_path.material, file.toString());
 
         add_optional_block(placed_position, 1, 0, 0);
         add_optional_block(placed_position, -1, 0, 0);
