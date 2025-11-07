@@ -29,7 +29,7 @@ public class UnloadedBlocksPlacer implements Listener {
 
         while (!place_queue.isEmpty()){
             PlaceData data = place_queue.poll();
-            Block block = world_data.world.getBlockAt(data.position.getBlockX(), data.position.getBlockY(), data.position.getBlockZ());
+            Block block = world_data.world.getBlockAt(data.position.x, data.position.y, data.position.z);
             block.setType(data.blockData, false);
             world_data.all_positons.put(block, data.text);
         }

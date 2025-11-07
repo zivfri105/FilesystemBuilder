@@ -16,8 +16,8 @@ public class PositionDecider {
         private final PathNode parent;
         private PathNode child;
         private final String name;
-        private Vector first_path_block;
-        private PriorityQueue<Vector> positions;
+        private Vector3Int first_path_block;
+        private PriorityQueue<Vector3Int> positions;
         private final Settings settings;
 
         public Material material;
@@ -27,7 +27,7 @@ public class PositionDecider {
             this.name = name;
             this.settings = settings;
             this.material = RandomBlocks.randomFullBlock(true);
-            positions = new PriorityQueue<>(Comparator.comparingDouble(v -> v.distanceSquared(this.first_path_block)));
+            positions = new PriorityQueue<>(Comparator.comparingDouble(v -> v.squared_distance(this.first_path_block)));
 
 
             if (parent == null) return;
@@ -40,11 +40,11 @@ public class PositionDecider {
             }
         }
 
-        public void add_position(Vector position){
+        public void add_position(Vector3Int position){
             this.positions.add(position);
         }
 
-        public Vector fetch_position(){
+        public Vector3Int fetch_position(){
             if (!this.positions.isEmpty())
                 return this.positions.poll();
 
@@ -66,7 +66,7 @@ public class PositionDecider {
             StringBuilder string = new StringBuilder();
             string.append(name);
             string.append(" Blocks{ ");
-            for (Vector v : positions) {
+            for (Vector3Int v : positions) {
                 string.append("(");
                 string.append(v);
                 string.append(")");
@@ -79,14 +79,14 @@ public class PositionDecider {
     private final Settings settings;
     private final WorldData world_data;
     private final FileEnumerator enumerator;
-    private Set<Vector> unallowed_positions;
+    private Set<Vector3Int> unallowed_positions;
 
     private PathNode root_path;
     private PathNode current_path;
     private int path_depth;
 
 
-    public PositionDecider(Settings settings, WorldData world_data, FileEnumerator enumerator, Vector initial_position) {
+    public PositionDecider(Settings settings, WorldData world_data, FileEnumerator enumerator, Vector3Int initial_position) {
         if (settings != null) this.settings = settings;
         else this.settings = new Settings();
 
@@ -130,7 +130,7 @@ public class PositionDecider {
     public void add_file(Path file){
         match_directories(file.getParent());
 
-        Vector placed_position = current_path.fetch_position();
+        Vector3Int placed_position = current_path.fetch_position();
         world_data.add_place_block(placed_position, current_path.material, file.toString());
 
         add_optional_block(placed_position, 1, 0, 0);
@@ -141,9 +141,9 @@ public class PositionDecider {
         add_optional_block(placed_position, 0, 0, -1);
     }
 
-    public void add_optional_block(Vector position, int x, int y, int z){
-        Vector newPosition = position.clone().add(new Vector(x, y, z));
-        if (newPosition.getBlockY() < -64 || newPosition.getBlockY() > 319)
+    public void add_optional_block(Vector3Int position, int x, int y, int z){
+        Vector3Int newPosition = position.clone().add(x, y, z);
+        if (newPosition.y < -64 || newPosition.y > 319)
             return;
         if (unallowed_positions.contains(newPosition)) return;
         unallowed_positions.add(newPosition);

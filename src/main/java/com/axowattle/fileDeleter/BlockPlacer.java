@@ -36,7 +36,7 @@ public class BlockPlacer implements Runnable{
         for (int blocksPlaced = 0; !world_data.place_queue.isEmpty() && blocksPlaced < maxPlacePerTick && (System.nanoTime() - start) < budgetNanos; blocksPlaced++){
             try {
                 PlaceData data = world_data.place_queue.take();
-                Block block = world_data.world.getBlockAt(data.position.getBlockX(), data.position.getBlockY(), data.position.getBlockZ());
+                Block block = world_data.world.getBlockAt(data.position.x, data.position.y, data.position.z);
                 Chunk chunk = block.getChunk();
                 if (!chunk.isLoaded()) {
                     world_data.add_unloaded_block(chunk, data);

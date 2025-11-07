@@ -26,7 +26,7 @@ public class WorldData {
     public final BlockingQueue<PlaceData> place_queue;
 
 
-    public void add_place_block(Vector position, Material block, String text){
+    public void add_place_block(Vector3Int position, Material block, String text){
         PlaceData data = new PlaceData();
         data.position = position;
         data.blockData = block;
