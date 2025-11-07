@@ -8,20 +8,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 
 public class BlockNotifier implements Runnable{
-    private final BlockPlacer placer;
+    private final WorldData world_data;
     public FileEnumerator current_enumerator;
 
-    public BlockNotifier(BlockPlacer placer) {
-        this.placer = placer;
+    public BlockNotifier(WorldData world_data) {
+        this.world_data = world_data;
     }
 
     @Override
     public void run() {
         for(Player player : Bukkit.getOnlinePlayers()){
             Block block = getTargetBlock(player, 5);
-            String text = placer.get_block_text(block);
+            String text = world_data.all_positons.get(block);
             if (text == null){
-                text = "Blocks Waiting: " + placer.get_waiting_length();
+                text = "Blocks Waiting: " + world_data.place_queue.size();
                 if (current_enumerator != null){
                     text += ", Files Waiting: " + current_enumerator.queuedCount();
                 }

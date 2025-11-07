@@ -34,7 +34,10 @@ public class BlockPlacer implements Runnable{
                 PlaceData data = world_data.place_queue.take();
                 Block block = world_data.world.getBlockAt(data.position.getBlockX(), data.position.getBlockY(), data.position.getBlockZ());
                 Chunk chunk = block.getChunk();
-                if (!chunk.isLoaded()) world_data.place_queue.put(data);
+                if (!chunk.isLoaded()) {
+                    world_data.add_unloaded_block(chunk, data);
+                    continue;
+                }
                 block.setType(data.blockData, false);
                 world_data.all_positons.put(block, data.text);
             } catch (InterruptedException e) {

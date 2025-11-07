@@ -2,6 +2,7 @@ package com.axowattle.fileDeleter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
@@ -12,12 +13,15 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         WorldData world_data = new WorldData(Bukkit.getWorld("world"), 50_000);
         placer = new BlockPlacer(world_data, 5_000);
-        notifier = new BlockNotifier(placer);
+        notifier = new BlockNotifier(world_data);
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, placer, 1, 1);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, notifier, 1, 1);
 
         getCommand("gen-files").setExecutor(new GenerateTreeCommand(world_data, notifier));
+
+        PluginManager pm = Bukkit.getPluginManager();
+        pm.registerEvents(new UnloadedBlocksPlacer(world_data), this);
     }
 
     @Override
