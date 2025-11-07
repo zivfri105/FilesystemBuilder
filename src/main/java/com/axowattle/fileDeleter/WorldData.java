@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,24 +15,24 @@ import java.util.concurrent.LinkedTransferQueue;
 public class WorldData {
     public WorldData(World world, int blocks_capacity) {
         unloaded_blocks = new HashMap<>();
-        all_positons = new HashMap<>();
+        all_positons = new FilePathArray();
         place_queue = new LinkedBlockingQueue<>(blocks_capacity);
         commited_positions = new HashSet<>();
         this.world = world;
     }
     public final World world;
     public final Map<Long, Queue<PlaceData>> unloaded_blocks;
-    public final Map<Block, String> all_positons;
+    public final FilePathArray all_positons;
     public final BlockingQueue<PlaceData> place_queue;
     public final Set<Vector3Int> commited_positions;
 
 
-    public void add_place_block(Vector3Int position, Material block, String text){
+    public void add_place_block(Vector3Int position, Material block, Path path){
         PlaceData data = new PlaceData();
         data.position = position;
         data.blockData = block;
         commited_positions.add(data.position);
-        data.text = text;
+        data.path = path;
         try {
             place_queue.put(data);
         } catch (InterruptedException e) {

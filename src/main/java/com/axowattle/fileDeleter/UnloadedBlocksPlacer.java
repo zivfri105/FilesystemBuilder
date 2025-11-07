@@ -31,7 +31,7 @@ public class UnloadedBlocksPlacer implements Listener {
             PlaceData data = place_queue.poll();
             Block block = world_data.world.getBlockAt(data.position.x, data.position.y, data.position.z);
             block.setType(data.blockData, false);
-            world_data.all_positons.put(block, data.text);
+            world_data.all_positons.add_path(new Vector3Int(block.getLocation().toVector()), data.path);
         }
     }
 }

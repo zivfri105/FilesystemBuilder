@@ -43,7 +43,7 @@ public class BlockPlacer implements Runnable{
                     continue;
                 }
                 block.setType(data.blockData, false);
-                world_data.all_positons.put(block, data.text);
+                world_data.all_positons.add_path(new Vector3Int(block.getLocation().toVector()) ,data.path);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -51,14 +51,8 @@ public class BlockPlacer implements Runnable{
     }
 
     public void revertBlocks(){
-        for(Block block : world_data.all_positons.keySet()){
-            block.setType(Material.AIR);
+        for(Vector3Int position : world_data.all_positons.keySet()){
+            world_data.world.getBlockAt(position.x, position.y, position.z).setType(Material.AIR);
         }
-    }
-
-    public String get_block_text(Block block){
-        if(world_data.all_positons.containsKey(block))
-            return world_data.all_positons.get(block);
-        return null;
     }
 }

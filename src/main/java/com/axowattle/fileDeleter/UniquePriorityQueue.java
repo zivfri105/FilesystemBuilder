@@ -32,4 +32,8 @@ class UniquePriorityQueue<E> implements Iterable<E>{
     public Iterator<E> iterator() {
         return pq.iterator();
     }
+
+    public int size(){
+        return pq.size();
+    }
 }

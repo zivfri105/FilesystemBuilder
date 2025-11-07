@@ -128,7 +128,7 @@ public class PositionDecider {
         match_directories(file.getParent());
 
         Vector3Int placed_position = current_path.fetch_position();
-        world_data.add_place_block(placed_position, current_path.material, file.toString());
+        world_data.add_place_block(placed_position, current_path.material, file);
 
         add_optional_block(placed_position, 1, 0, 0);
         add_optional_block(placed_position, -1, 0, 0);

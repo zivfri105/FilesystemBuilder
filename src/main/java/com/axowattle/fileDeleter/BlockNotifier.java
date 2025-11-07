@@ -7,6 +7,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 
+import java.nio.file.Path;
+
 public class BlockNotifier implements Runnable{
     private final WorldData world_data;
     public FileEnumerator current_enumerator;
@@ -19,8 +21,13 @@ public class BlockNotifier implements Runnable{
     public void run() {
         for(Player player : Bukkit.getOnlinePlayers()){
             Block block = getTargetBlock(player, 5);
-            String text = world_data.all_positons.get(block);
-            if (text == null){
+            String text = "";
+            if (block != null){
+                Path path = world_data.all_positons.get(new Vector3Int(block.getLocation().toVector()));
+                if (path != null)
+                    text = path.toString();
+            }
+            if (text.isEmpty()){
                 text = "Blocks Waiting: " + world_data.place_queue.size();
                 if (current_enumerator != null){
                     text += ", Files Waiting: " + current_enumerator.queuedCount();
