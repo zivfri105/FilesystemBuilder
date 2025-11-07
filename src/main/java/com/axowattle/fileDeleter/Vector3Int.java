@@ -32,6 +32,8 @@ public class Vector3Int {
     }
 
     public int squared_distance(Vector3Int other){
+        if (other == null) return 0;
+
         int dx = x - other.x;
         int dy = y - other.y;
         int dz = z - other.z;

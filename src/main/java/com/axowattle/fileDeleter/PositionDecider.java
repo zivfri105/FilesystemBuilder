@@ -17,7 +17,7 @@ public class PositionDecider {
         private PathNode child;
         private final String name;
         private Vector3Int first_path_block;
-        private PriorityQueue<Vector3Int> positions;
+        private UniquePriorityQueue<Vector3Int> positions;
         private final Settings settings;
 
         public Material material;
@@ -27,7 +27,7 @@ public class PositionDecider {
             this.name = name;
             this.settings = settings;
             this.material = RandomBlocks.randomFullBlock(true);
-            positions = new PriorityQueue<>(Comparator.comparingDouble(v -> v.squared_distance(this.first_path_block)));
+            positions = new UniquePriorityQueue<>(Comparator.comparingInt(v -> v.squared_distance(this.first_path_block)));
 
 
             if (parent == null) return;
@@ -79,7 +79,6 @@ public class PositionDecider {
     private final Settings settings;
     private final WorldData world_data;
     private final FileEnumerator enumerator;
-    private Set<Vector3Int> unallowed_positions;
 
     private PathNode root_path;
     private PathNode current_path;
@@ -93,7 +92,6 @@ public class PositionDecider {
         this.world_data = world_data;
         this.enumerator = enumerator;
         this.path_depth = 0;
-        unallowed_positions = new HashSet<>();
 
         String cwd = System.getProperty("user.dir");
         String rootName = Paths.get(cwd).getRoot().toString();
@@ -102,7 +100,6 @@ public class PositionDecider {
         path_depth = 0; // depth 0 at root node
         root_path.add_position(initial_position);
         root_path.first_path_block = initial_position;
-        unallowed_positions.add(initial_position);
     }
 
     public void match_directories(Path path) {
@@ -145,8 +142,7 @@ public class PositionDecider {
         Vector3Int newPosition = position.clone().add(x, y, z);
         if (newPosition.y < -64 || newPosition.y > 319)
             return;
-        if (unallowed_positions.contains(newPosition)) return;
-        unallowed_positions.add(newPosition);
+        if (world_data.commited_positions.contains(newPosition)) return;
         current_path.add_position(newPosition);
     }
 

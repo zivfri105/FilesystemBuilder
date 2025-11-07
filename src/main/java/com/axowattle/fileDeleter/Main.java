@@ -13,7 +13,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         WorldData world_data = new WorldData(Bukkit.getWorld("world"), 50_000);
-        placer = new BlockPlacer(world_data, 100, 10 * NANOSECONDS_PER_MILLISECONDS);
+        placer = new BlockPlacer(world_data, 10_0000, 1 * NANOSECONDS_PER_MILLISECONDS);
         notifier = new BlockNotifier(world_data);
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, placer, 1, 1);

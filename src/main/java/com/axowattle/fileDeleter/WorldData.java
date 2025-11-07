@@ -6,9 +6,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.LinkedTransferQueue;
@@ -18,18 +16,21 @@ public class WorldData {
         unloaded_blocks = new HashMap<>();
         all_positons = new HashMap<>();
         place_queue = new LinkedBlockingQueue<>(blocks_capacity);
+        commited_positions = new HashSet<>();
         this.world = world;
     }
     public final World world;
     public final Map<Long, Queue<PlaceData>> unloaded_blocks;
     public final Map<Block, String> all_positons;
     public final BlockingQueue<PlaceData> place_queue;
+    public final Set<Vector3Int> commited_positions;
 
 
     public void add_place_block(Vector3Int position, Material block, String text){
         PlaceData data = new PlaceData();
         data.position = position;
         data.blockData = block;
+        commited_positions.add(data.position);
         data.text = text;
         try {
             place_queue.put(data);
