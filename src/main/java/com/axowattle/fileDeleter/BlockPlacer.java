@@ -21,15 +21,19 @@ public class BlockPlacer implements Runnable{
 
     private final WorldData world_data;
     private final int maxPlacePerTick;
+    private final long budgetNanos;
 
-    public BlockPlacer(WorldData world_data, int maxPlacePerTick) {
+    public BlockPlacer(WorldData world_data, int maxPlacePerTick, long budgetNanos) {
         this.maxPlacePerTick = maxPlacePerTick;
         this.world_data = world_data;
+        this.budgetNanos = budgetNanos;
     }
 
     @Override
     public void run() {
-        for (int blocksPlaced = 0; !world_data.place_queue.isEmpty() && blocksPlaced < maxPlacePerTick; blocksPlaced++){
+        final long start = System.nanoTime();
+
+        for (int blocksPlaced = 0; !world_data.place_queue.isEmpty() && blocksPlaced < maxPlacePerTick && (System.nanoTime() - start) < budgetNanos; blocksPlaced++){
             try {
                 PlaceData data = world_data.place_queue.take();
                 Block block = world_data.world.getBlockAt(data.position.getBlockX(), data.position.getBlockY(), data.position.getBlockZ());
