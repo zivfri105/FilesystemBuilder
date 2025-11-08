@@ -4,3 +4,4 @@ main: com.axowattle.fileDeleter.Main
 api-version: '1.21'
 commands:
   gen-files:
+  delete-files:

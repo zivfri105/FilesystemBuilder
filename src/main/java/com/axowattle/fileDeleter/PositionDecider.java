@@ -11,7 +11,7 @@ import java.util.*;
 public class PositionDecider {
     class Settings{
         int fetchBlocksFromParent = 4;
-        int maxSize = 50_000;
+        int maxSize = 5_000;
     }
 
     class PathNode{

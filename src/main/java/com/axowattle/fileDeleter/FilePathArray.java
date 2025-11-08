@@ -54,6 +54,11 @@ public class FilePathArray {
         return Paths.get("/", segments.toArray(new String[0]));
     }
 
+    public void clear(){
+        root_node = new Node("/", null);
+        indexes.clear();
+    }
+
     public Set<Vector3Int> keySet(){
         return indexes.keySet();
     }

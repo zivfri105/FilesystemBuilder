@@ -17,6 +17,7 @@ public class WorldData {
         unloaded_blocks = new HashMap<>();
         all_positons = new FilePathArray();
         place_queue = new LinkedBlockingQueue<>(blocks_capacity);
+        high_priority_place_queue = new LinkedBlockingQueue<>();
         commited_positions = new HashSet<>();
         this.world = world;
     }
@@ -24,6 +25,7 @@ public class WorldData {
     public final Map<Long, Queue<PlaceData>> unloaded_blocks;
     public final FilePathArray all_positons;
     public final BlockingQueue<PlaceData> place_queue;
+    public final BlockingQueue<PlaceData> high_priority_place_queue;
     public final Set<Vector3Int> commited_positions;
 
 
@@ -55,6 +57,23 @@ public class WorldData {
             return null;
 
         return unloaded_blocks.get(chunk_key);
+    }
+
+    public void revert_blocks() throws InterruptedException {
+        unloaded_blocks.clear();
+        place_queue.clear();
+        commited_positions.clear();
+
+        for (Vector3Int position : all_positons.keySet()){
+            PlaceData data = new PlaceData();
+            data.position = position;
+            data.blockData = Material.AIR;
+            data.path = null;
+            high_priority_place_queue.put(data);
+        }
+
+
+        all_positons.clear();
     }
 
     private static long get_chunk_key(int cx, int cz) {

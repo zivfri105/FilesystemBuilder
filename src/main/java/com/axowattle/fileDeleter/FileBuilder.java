@@ -44,5 +44,7 @@ public class FileBuilder {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        notifier.current_enumerator = null;
     }
 }

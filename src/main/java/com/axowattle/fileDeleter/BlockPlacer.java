@@ -33,9 +33,11 @@ public class BlockPlacer implements Runnable{
     public void run() {
         final long start = System.nanoTime();
 
-        for (int blocksPlaced = 0; !world_data.place_queue.isEmpty() && blocksPlaced < maxPlacePerTick && (System.nanoTime() - start) < budgetNanos; blocksPlaced++){
+        for (int blocksPlaced = 0; (!world_data.place_queue.isEmpty() || !world_data.high_priority_place_queue.isEmpty()) && blocksPlaced < maxPlacePerTick && (System.nanoTime() - start) < budgetNanos; blocksPlaced++){
             try {
-                PlaceData data = world_data.place_queue.take();
+                PlaceData data;
+                if (world_data.high_priority_place_queue.isEmpty()) data = world_data.place_queue.take();
+                else data = world_data.high_priority_place_queue.take();
                 Block block = world_data.world.getBlockAt(data.position.x, data.position.y, data.position.z);
                 Chunk chunk = block.getChunk();
                 if (!chunk.isLoaded()) {
@@ -43,7 +45,8 @@ public class BlockPlacer implements Runnable{
                     continue;
                 }
                 block.setType(data.blockData, false);
-                world_data.all_positons.add_path(new Vector3Int(block.getLocation().toVector()) ,data.path);
+                if (data.path != null)
+                    world_data.all_positons.add_path(new Vector3Int(block.getLocation().toVector()) ,data.path);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

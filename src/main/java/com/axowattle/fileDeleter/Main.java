@@ -13,13 +13,15 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         WorldData world_data = new WorldData(Bukkit.getWorld("world"), 50_000);
-        placer = new BlockPlacer(world_data, 5_0000, 10 * NANOSECONDS_PER_MILLISECONDS);
+        placer = new BlockPlacer(world_data, 100_0000, 30 * NANOSECONDS_PER_MILLISECONDS);
         notifier = new BlockNotifier(world_data);
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, placer, 1, 1);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, notifier, 1, 1);
 
         getCommand("gen-files").setExecutor(new GenerateTreeCommand(world_data, notifier));
+        getCommand("delete-files").setExecutor(new DeleteTreeCommand(world_data));
+
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new UnloadedBlocksPlacer(world_data), this);
