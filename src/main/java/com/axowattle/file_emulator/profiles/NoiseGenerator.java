@@ -60,6 +60,64 @@ public class NoiseGenerator {
         return this.seed;
     }
 
+    // =========================
+    // White Noise (deterministic)
+    // =========================
+
+    /** White noise in [-1, 1] for 1D input */
+    public double whiteNoise(double x) {
+        long h = (long) seed;
+        h ^= mix64(Double.doubleToLongBits(x));
+        return toSignedUnit(h);
+    }
+
+    /** White noise in [-1, 1] for 2D input */
+    public double whiteNoise(double x, double y) {
+        long h = (long) seed;
+        h ^= mix64(Double.doubleToLongBits(x));
+        h ^= rotl(mix64(Double.doubleToLongBits(y)), 23);
+        return toSignedUnit(h);
+    }
+
+    /** White noise in [-1, 1] for 3D input */
+    public double whiteNoise(double x, double y, double z) {
+        long h = (long) seed;
+        h ^= mix64(Double.doubleToLongBits(x));
+        h ^= rotl(mix64(Double.doubleToLongBits(y)), 23);
+        h ^= rotl(mix64(Double.doubleToLongBits(z)), 47);
+        return toSignedUnit(h);
+    }
+
+
+    // =========================
+    // Helpers (fast, no RNG state)
+    // =========================
+
+    // MurmurHash3-style finalizer for good bit diffusion
+    private static long mix64(long z) {
+        z ^= (z >>> 33);
+        z *= 0xff51afd7ed558ccdL;
+        z ^= (z >>> 33);
+        z *= 0xc4ceb9fe1a85ec53L;
+        z ^= (z >>> 33);
+        return z;
+    }
+
+    private static long rotl(long x, int k) {
+        return (x << k) | (x >>> (64 - k));
+    }
+
+    /** Map hashed 64-bit value to [0,1) with 53 bits of precision */
+    private static double toUnit(long h) {
+        // Use top 53 bits as a double mantissa
+        return ((h >>> 11) * 0x1.0p-53);
+    }
+
+    /** Map hashed 64-bit value to [-1,1] */
+    private static double toSignedUnit(long h) {
+        return toUnit(h) * 2.0 - 1.0;
+    }
+
     public double noise(double x, double y, double z, int size) {
         double value = 0.0;
         double initialSize = size;

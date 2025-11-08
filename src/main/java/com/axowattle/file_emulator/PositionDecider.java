@@ -113,10 +113,10 @@ public class PositionDecider {
         String cwd = System.getProperty("user.dir");
         String rootName = Paths.get(cwd).getRoot().toString();
         root_path = new PathNode(null, profile, rootName, settings);
+        root_path.first_path_block = initial_position;
         current_path = root_path;
         profile.on_path_enter(root_path);
         root_path.add_position(initial_position);
-        root_path.first_path_block = initial_position;
     }
 
     public void match_directories(Path path) {

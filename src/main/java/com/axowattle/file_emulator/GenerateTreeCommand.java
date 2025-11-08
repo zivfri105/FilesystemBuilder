@@ -1,16 +1,12 @@
 package com.axowattle.file_emulator;
 
-import com.axowattle.file_emulator.profiles.RandomCubeProfile;
-import com.axowattle.file_emulator.profiles.RandomDiamondProfile;
-import com.axowattle.file_emulator.profiles.RandomPerlinNoiseProfile;
-import com.axowattle.file_emulator.profiles.RandomSphereProfile;
+import com.axowattle.file_emulator.profiles.*;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,12 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("ClassCanBeRecord")
 public class GenerateTreeCommand implements CommandExecutor, TabCompleter {
     private final WorldData world_data;
     private final BlockNotifier notifier;
 
-    private Map<String, PlaceProfile> profiles;
+    private final Map<String, PlaceProfile> profiles;
 
     public GenerateTreeCommand(WorldData world_data, BlockNotifier notifier) {
         this.world_data = world_data;
@@ -34,8 +29,8 @@ public class GenerateTreeCommand implements CommandExecutor, TabCompleter {
         profiles.put("spheres", new RandomSphereProfile());
         profiles.put("diamonds", new RandomDiamondProfile());
         profiles.put("cubes", new RandomCubeProfile());
-        profiles.put("perlin", new RandomPerlinNoiseProfile());
-
+        profiles.put("perlin-caves", new RandomCavePerlinNoiseProfile());
+        profiles.put("perlin-lines", new RandomLinesPerlinNoiseProfile());
     }
 
     @Override
