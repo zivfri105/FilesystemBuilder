@@ -10,35 +10,47 @@ public class PositionDecider {
         int maxSize = 5_000;
     }
 
+    private static class PriorityVector{
+        public Vector3Int vec;
+        public double priority;
+
+        public PriorityVector(Vector3Int vec, PathNode node){
+            priority = node.profile.position_value(vec, node);
+            this.vec = vec;
+        }
+    }
+
     public static class PathNode{
         private final PathNode parent;
         private PathNode child;
         private final String name;
         private Vector3Int first_path_block;
-        private final UniquePriorityQueue<Vector3Int> positions;
+        private final UniquePriorityQueue<PriorityVector> positions;
         private Settings settings;
+        private final PlaceProfile profile;
 
 
         public PathNode(PathNode parent, PlaceProfile profile, String name, Settings settings){
+            this.profile = profile;
             this.parent = parent;
             this.name = name;
             this.settings = settings;
             if (settings == null) this.settings = new Settings();
-            positions = new UniquePriorityQueue<>(Comparator.comparingDouble(v -> profile.position_value(v, this)));
+            positions = new UniquePriorityQueue<>(Comparator.comparingDouble(v -> v.priority));
 
 
             if (parent == null) return;
             parent.child = this;
 
             this.first_path_block = parent.fetch_position();
-            positions.add(this.first_path_block);
+            positions.add(new PriorityVector(this.first_path_block, this));
             for (int i = 0; i < this.settings.fetchBlocksFromParent - 1 && !parent.positions.isEmpty(); i++){
-                positions.add(parent.fetch_position());
+                positions.add(new PriorityVector(parent.fetch_position(), this));
             }
         }
 
         public void add_position(Vector3Int position){
-            this.positions.add(position);
+            this.positions.add(new PriorityVector(position, this));
             while (this.positions.size() > settings.maxSize){
                 positions.poll();
             }
@@ -46,7 +58,7 @@ public class PositionDecider {
 
         public Vector3Int fetch_position(){
             if (!this.positions.isEmpty())
-                return this.positions.poll();
+                return this.positions.poll().vec;
 
             if (parent == null)
                 throw new RuntimeException("Positions are empty this should never happen");
@@ -57,7 +69,8 @@ public class PositionDecider {
         public void empty_node(){
             if (parent == null) return;
             while (!this.positions.isEmpty()){
-                parent.positions.add(this.positions.poll());
+                Vector3Int data = this.positions.poll().vec;
+                parent.positions.add(new PriorityVector(data, this));
             }
         }
 
@@ -70,9 +83,9 @@ public class PositionDecider {
             StringBuilder string = new StringBuilder();
             string.append(name);
             string.append(" Blocks{ ");
-            for (Vector3Int v : positions) {
+            for (PriorityVector v : positions) {
                 string.append("(");
-                string.append(v);
+                string.append(v.vec);
                 string.append(")");
             }
             string.append("}");

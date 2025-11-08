@@ -8,4 +8,5 @@ public class PlaceData{
     public Vector3Int position;
     public Material blockData;
     public Path path;
+    public double value;
 }

@@ -7,16 +7,18 @@ import org.bukkit.Material;
 
 import java.util.Stack;
 
-public class RandomSphereProfile implements PlaceProfile {
+public class RandomCubeProfile implements PlaceProfile {
     private final Stack<Material> blocks_stack;
 
-    public RandomSphereProfile(){
+    public RandomCubeProfile(){
         blocks_stack = new Stack<>();
     }
 
     @Override
     public double position_value(Vector3Int position, PositionDecider.PathNode path_node) {
-        return position.squared_distance(path_node.get_first_path_block());
+        return Math.max(Math.max(Math.abs(position.x - path_node.get_first_path_block().x),
+                Math.abs(position.y - path_node.get_first_path_block().y)),
+                Math.abs(position.z - path_node.get_first_path_block().z));
     }
 
     @Override

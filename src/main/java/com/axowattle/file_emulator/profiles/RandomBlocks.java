@@ -1,4 +1,4 @@
-package com.axowattle.file_emulator;
+package com.axowattle.file_emulator.profiles;
 
 import org.bukkit.Material;
 
