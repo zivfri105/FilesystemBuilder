@@ -1,7 +1,9 @@
 package com.axowattle.fileDeleter;
 
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileBuilder {
@@ -12,7 +14,11 @@ public class FileBuilder {
 
     public FileBuilder(PositionDecider position_decider, BlockNotifier notifier) {
         this.notifier = notifier;
-        file_enumerator = FileEnumerator.forRoots(List.of(Paths.get(System.getProperty("user.home"))), 50_000);
+        Iterable<Path> rootsIterable = FileSystems.getDefault().getRootDirectories();
+        List<Path> roots = new ArrayList<>();
+        rootsIterable.forEach(roots::add);
+
+        file_enumerator = FileEnumerator.forRoots(roots, 50_000);
         notifier.current_enumerator = file_enumerator;
         this.position_decider = position_decider;
     }
