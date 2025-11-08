@@ -1,5 +1,6 @@
 package com.axowattle.fileDeleter;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
@@ -10,6 +11,7 @@ import java.util.*;
 public class PositionDecider {
     class Settings{
         int fetchBlocksFromParent = 4;
+        int maxSize = 50_000;
     }
 
     class PathNode{
@@ -18,7 +20,7 @@ public class PositionDecider {
         private final String name;
         private Vector3Int first_path_block;
         private UniquePriorityQueue<Vector3Int> positions;
-        private final Settings settings;
+        private Settings settings;
 
         public Material material;
 
@@ -26,6 +28,7 @@ public class PositionDecider {
             this.parent = parent;
             this.name = name;
             this.settings = settings;
+            if (settings == null) this.settings = new Settings();
             this.material = RandomBlocks.randomFullBlock(true);
             positions = new UniquePriorityQueue<>(Comparator.comparingInt(v -> v.squared_distance(this.first_path_block)));
 
@@ -42,6 +45,9 @@ public class PositionDecider {
 
         public void add_position(Vector3Int position){
             this.positions.add(position);
+            while (this.positions.size() > settings.maxSize){
+                positions.poll();
+            }
         }
 
         public Vector3Int fetch_position(){
@@ -128,6 +134,9 @@ public class PositionDecider {
         match_directories(file.getParent());
 
         Vector3Int placed_position = current_path.fetch_position();
+        while (world_data.commited_positions.contains(placed_position)){
+            placed_position = current_path.fetch_position();
+        }
         world_data.add_place_block(placed_position, current_path.material, file);
 
         add_optional_block(placed_position, 1, 0, 0);
