@@ -1,6 +1,6 @@
 name: FIleEmulator
 version: '1.0-SNAPSHOT'
-main: com.axowattle.fileDeleter.Main
+main: com.axowattle.file_emulator.Main
 api-version: '1.21'
 commands:
   gen-files:

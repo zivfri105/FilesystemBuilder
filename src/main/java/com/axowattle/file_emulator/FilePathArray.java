@@ -1,6 +1,4 @@
-package com.axowattle.fileDeleter;
-
-import com.sun.source.tree.Tree;
+package com.axowattle.file_emulator;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

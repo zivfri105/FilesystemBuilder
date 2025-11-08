@@ -1,14 +1,10 @@
-package com.axowattle.fileDeleter;
+package com.axowattle.file_emulator;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.nio.file.Paths;
-import java.util.List;
 
 public class GenerateTreeCommand implements CommandExecutor {
     private final WorldData world_data;

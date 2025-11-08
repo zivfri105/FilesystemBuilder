@@ -1,4 +1,4 @@
-package com.axowattle.fileDeleter;
+package com.axowattle.file_emulator;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;

@@ -1,4 +1,4 @@
-package com.axowattle.fileDeleter;
+package com.axowattle.file_emulator;
 
 import java.util.*;
 

@@ -1,10 +1,8 @@
-package com.axowattle.fileDeleter;
+package com.axowattle.file_emulator;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.util.Vector;
 
 import java.nio.file.Path;
 import java.util.*;
