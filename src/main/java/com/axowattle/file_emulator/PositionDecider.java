@@ -12,7 +12,7 @@ public class PositionDecider {
         int maxSize = 5_000;
     }
 
-    class PathNode{
+    public class PathNode{
         private final PathNode parent;
         private PathNode child;
         private final String name;
@@ -20,15 +20,13 @@ public class PositionDecider {
         private UniquePriorityQueue<Vector3Int> positions;
         private Settings settings;
 
-        public Material material;
 
-        public PathNode(PathNode parent, String name, Settings settings){
+        public PathNode(PathNode parent, PlaceProfile profile, String name, Settings settings){
             this.parent = parent;
             this.name = name;
             this.settings = settings;
             if (settings == null) this.settings = new Settings();
-            this.material = RandomBlocks.randomFullBlock(true);
-            positions = new UniquePriorityQueue<>(Comparator.comparingInt(v -> v.squared_distance(this.first_path_block)));
+            positions = new UniquePriorityQueue<>(Comparator.comparingDouble(v -> profile.position_value(v, this)));
 
 
             if (parent == null) return;
@@ -65,6 +63,10 @@ public class PositionDecider {
             }
         }
 
+        public Vector3Int get_first_path_block() {
+            return first_path_block;
+        }
+
         @Override
         public String toString() {
             StringBuilder string = new StringBuilder();
@@ -82,26 +84,26 @@ public class PositionDecider {
 
     private final Settings settings;
     private final WorldData world_data;
-    private final FileEnumerator enumerator;
 
     private PathNode root_path;
     private PathNode current_path;
-    private int path_depth;
+    private PlaceProfile profile;
 
 
-    public PositionDecider(Settings settings, WorldData world_data, FileEnumerator enumerator, Vector3Int initial_position) {
+
+    public PositionDecider(Settings settings, PlaceProfile profile, WorldData world_data, Vector3Int initial_position) {
         if (settings != null) this.settings = settings;
         else this.settings = new Settings();
 
+        this.profile = profile;
+
         this.world_data = world_data;
-        this.enumerator = enumerator;
-        this.path_depth = 0;
 
         String cwd = System.getProperty("user.dir");
         String rootName = Paths.get(cwd).getRoot().toString();
-        root_path = new PathNode(null, rootName, settings);
+        root_path = new PathNode(null, profile, rootName, settings);
         current_path = root_path;
-        path_depth = 0; // depth 0 at root node
+        profile.on_path_enter(root_path);
         root_path.add_position(initial_position);
         root_path.first_path_block = initial_position;
     }
@@ -135,7 +137,7 @@ public class PositionDecider {
         while (world_data.commited_positions.contains(placed_position)){
             placed_position = current_path.fetch_position();
         }
-        world_data.add_place_block(placed_position, current_path.material, file);
+        world_data.add_place_block(placed_position, profile.select_material(placed_position), file);
 
         add_optional_block(placed_position, 1, 0, 0);
         add_optional_block(placed_position, -1, 0, 0);
@@ -166,10 +168,12 @@ public class PositionDecider {
     }
 
     private void add_directory(String name){
-        current_path = new PathNode(current_path, name, settings);
+        current_path =new PathNode(current_path, profile, name, settings);
+        profile.on_path_enter(current_path);
     }
 
     private void remove_directory(){
+        profile.on_path_exit(current_path);
         current_path.empty_node();
         current_path = current_path.parent;
     }

@@ -1,5 +1,6 @@
 package com.axowattle.file_emulator;
 
+import com.axowattle.file_emulator.profiles.RandomSphereProfile;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -23,7 +24,7 @@ public class GenerateTreeCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
 
-        PositionDecider decider = new PositionDecider(null, world_data, null, new Vector3Int(player.getLocation().toVector()));
+        PositionDecider decider = new PositionDecider(null, new RandomSphereProfile(), world_data, new Vector3Int(player.getLocation().toVector()));
 
         FileBuilder builder = new FileBuilder(decider, notifier);
         builder.start();

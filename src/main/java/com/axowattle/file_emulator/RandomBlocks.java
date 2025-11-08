@@ -91,6 +91,7 @@ public final class RandomBlocks {
             Material.VAULT,
             Material.CRAFTER,
             Material.TNT,
+            Material.TRIAL_SPAWNER,
             Material.PLAYER_WALL_HEAD,
             Material.DRAGON_HEAD,
             Material.DRAGON_WALL_HEAD,
