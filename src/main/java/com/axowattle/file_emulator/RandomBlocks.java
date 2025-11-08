@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public final class RandomBlocks {
     private static final Set<Material> ADMIN_ONLY = Set.of(
             Material.BARRIER,

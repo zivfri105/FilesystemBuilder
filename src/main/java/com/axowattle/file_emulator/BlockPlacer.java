@@ -4,6 +4,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class BlockPlacer implements Runnable{
 
 

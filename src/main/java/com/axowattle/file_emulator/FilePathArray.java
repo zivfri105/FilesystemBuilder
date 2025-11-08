@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class FilePathArray {
-    class Node{
+    static class Node{
         public Node(String name, Node parent){
             this.name = name;
             this.parent = parent;
@@ -17,7 +17,7 @@ public class FilePathArray {
         public Map<String, Node> children;
     }
 
-    private Map<Vector3Int ,Node> indexes;
+    private final Map<Vector3Int ,Node> indexes;
     private Node root_node;
 
     public FilePathArray(){
@@ -25,7 +25,7 @@ public class FilePathArray {
         root_node = new Node("/", null);
     }
 
-    public int add_path(Vector3Int position, Path path) {
+    public void add_path(Vector3Int position, Path path) {
         Node current_node = root_node;
         for (int i = 0; i < path.getNameCount(); i++) {
             String segment = path.getName(i).toString();
@@ -33,7 +33,6 @@ public class FilePathArray {
             current_node = current_node.children.get(segment);
         }
         indexes.put(position ,current_node);
-        return indexes.size() - 1;
     }
 
     public Path get(Vector3Int position) {

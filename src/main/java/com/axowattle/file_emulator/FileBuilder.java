@@ -9,7 +9,7 @@ public class FileBuilder {
     private final FileEnumerator file_enumerator;
     private final PositionDecider position_decider;
     private final BlockNotifier notifier;
-    private Thread worker;
+    private boolean is_running;
 
     public FileBuilder(PositionDecider position_decider, BlockNotifier notifier) {
         this.notifier = notifier;
@@ -23,9 +23,14 @@ public class FileBuilder {
     }
 
     public void start(){
-        worker = new Thread(this::run_thread, "FileQueueDrainer");
-        worker.setDaemon(true);
+        Thread worker = new Thread(this::run_thread, "FileQueueDrainer");
+        is_running = true;
         worker.start();
+    }
+
+    @SuppressWarnings("unused")
+    public void kill_thread(){
+        is_running = false;
     }
 
     private void run_thread() {
@@ -34,7 +39,7 @@ public class FileBuilder {
         try {
             Path file = file_enumerator.take();
 
-            while (file != null){
+            while (file != null && is_running){
                 position_decider.add_file(file);
 
 

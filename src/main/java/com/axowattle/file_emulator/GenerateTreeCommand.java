@@ -6,7 +6,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class GenerateTreeCommand implements CommandExecutor {
     private final WorldData world_data;
     private final BlockNotifier notifier;
@@ -17,12 +19,11 @@ public class GenerateTreeCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] strings) {
-        if (!(sender instanceof Player)){
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String[] strings) {
+        if (!(sender instanceof Player player)){
             sender.sendMessage(ChatColor.RED + "Only players can use this command");
             return false;
         }
-        Player player = (Player) sender;
 
         PositionDecider decider = new PositionDecider(null, new RandomSphereProfile(), world_data, new Vector3Int(player.getLocation().toVector()));
 

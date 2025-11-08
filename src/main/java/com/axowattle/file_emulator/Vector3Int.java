@@ -20,6 +20,7 @@ public class Vector3Int {
         this.z = vec.getBlockZ();
     }
 
+    @Override
     public Vector3Int clone(){
         return new Vector3Int(x, y, z);
     }

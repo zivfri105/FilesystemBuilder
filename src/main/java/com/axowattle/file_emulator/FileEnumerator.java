@@ -1,5 +1,7 @@
 package com.axowattle.file_emulator;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -45,7 +47,6 @@ public final class FileEnumerator implements AutoCloseable {
         this.dirSkipPredicate = dirSkipPredicate != null ? dirSkipPredicate : p -> false;
 
         this.worker = new Thread(this::runWalk, "FileEnumerator-Worker");
-        this.worker.setDaemon(true);
     }
 
     /** Start the background crawl thread (idempotent). */
@@ -79,6 +80,7 @@ public final class FileEnumerator implements AutoCloseable {
     }
 
     /** Non-blocking fetch; returns null if none currently available. */
+    @SuppressWarnings("unused")
     public Path tryPoll() {
         return queue.poll();
     }
@@ -122,7 +124,7 @@ public final class FileEnumerator implements AutoCloseable {
         try {
             Files.walkFileTree(root, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                public @NotNull FileVisitResult preVisitDirectory(@NotNull Path dir, @NotNull BasicFileAttributes attrs) {
                     if (!running.get()) return FileVisitResult.TERMINATE;
 
                     // Skip known problematic/system pseudo-filesystems or junk dirs
@@ -133,7 +135,7 @@ public final class FileEnumerator implements AutoCloseable {
                 }
 
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) {
                     if (!running.get()) return FileVisitResult.TERMINATE;
                     if (attrs.isRegularFile()) {
                         // Backpressure-aware: block if the consumer is slower
@@ -148,7 +150,7 @@ public final class FileEnumerator implements AutoCloseable {
                 }
 
                 @Override
-                public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                public @NotNull FileVisitResult visitFileFailed(@NotNull Path file, @NotNull IOException exc) {
                     // Ignore unreadable files/dirs; keep going
                     return running.get() ? FileVisitResult.CONTINUE : FileVisitResult.TERMINATE;
                 }
@@ -164,11 +166,11 @@ public final class FileEnumerator implements AutoCloseable {
         String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
 
         if (os.contains("win")) {
-            String lname = name.toLowerCase(Locale.ROOT);
-            return lname.equals("system volume information")
-                    || lname.equals("$recycle.bin")
-                    || lname.equals("windowsapps")
-                    || lname.equals("windows") && dir.getParent() == null; // skip C:\Windows root if desired
+            String lower_name = name.toLowerCase(Locale.ROOT);
+            return lower_name.equals("system volume information")
+                    || lower_name.equals("$recycle.bin")
+                    || lower_name.equals("windowsapps")
+                    || lower_name.equals("windows") && dir.getParent() == null; // skip C:\Windows root if desired
         } else {
             // Linux/Unix: skip pseudo FS and volatile areas that explode traversal size or cause loops
             // You can tweak this list to your needs.

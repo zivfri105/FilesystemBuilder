@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import java.util.Stack;
 
 public class RandomSphereProfile implements PlaceProfile {
-    private Stack<Material> blocks_stack;
+    private final Stack<Material> blocks_stack;
 
     public RandomSphereProfile(){
         blocks_stack = new Stack<>();

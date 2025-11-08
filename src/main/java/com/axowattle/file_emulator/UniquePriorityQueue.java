@@ -1,7 +1,10 @@
 package com.axowattle.file_emulator;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
+@SuppressWarnings({"UnusedReturnValue", "BooleanMethodIsAlwaysInverted"})
 class UniquePriorityQueue<E> implements Iterable<E>{
     private final PriorityQueue<E> pq;
     private final Set<E> seen;
@@ -29,7 +32,7 @@ class UniquePriorityQueue<E> implements Iterable<E>{
 
 
     @Override
-    public Iterator<E> iterator() {
+    public @NotNull Iterator<E> iterator() {
         return pq.iterator();
     }
 

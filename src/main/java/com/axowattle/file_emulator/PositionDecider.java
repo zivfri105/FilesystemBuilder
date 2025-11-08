@@ -1,23 +1,21 @@
 package com.axowattle.file_emulator;
 
-import org.bukkit.Material;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
 public class PositionDecider {
-    class Settings{
+    public static class Settings{
         int fetchBlocksFromParent = 4;
         int maxSize = 5_000;
     }
 
-    public class PathNode{
+    public static class PathNode{
         private final PathNode parent;
         private PathNode child;
         private final String name;
         private Vector3Int first_path_block;
-        private UniquePriorityQueue<Vector3Int> positions;
+        private final UniquePriorityQueue<Vector3Int> positions;
         private Settings settings;
 
 
@@ -34,7 +32,7 @@ public class PositionDecider {
 
             this.first_path_block = parent.fetch_position();
             positions.add(this.first_path_block);
-            for (int i = 0; i < settings.fetchBlocksFromParent - 1 && !parent.positions.isEmpty(); i++){
+            for (int i = 0; i < this.settings.fetchBlocksFromParent - 1 && !parent.positions.isEmpty(); i++){
                 positions.add(parent.fetch_position());
             }
         }
@@ -85,9 +83,9 @@ public class PositionDecider {
     private final Settings settings;
     private final WorldData world_data;
 
-    private PathNode root_path;
+    private final PathNode root_path;
     private PathNode current_path;
-    private PlaceProfile profile;
+    private final PlaceProfile profile;
 
 
 
@@ -168,7 +166,7 @@ public class PositionDecider {
     }
 
     private void add_directory(String name){
-        current_path =new PathNode(current_path, profile, name, settings);
+        current_path = new PathNode(current_path, profile, name, settings);
         profile.on_path_enter(current_path);
     }
 

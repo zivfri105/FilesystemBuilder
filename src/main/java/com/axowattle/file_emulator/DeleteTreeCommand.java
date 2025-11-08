@@ -4,7 +4,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class DeleteTreeCommand implements CommandExecutor {
     private final WorldData worldData;
 
@@ -13,8 +15,8 @@ public class DeleteTreeCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] strings) {
-        if(!(sender instanceof Player player)) return false;
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, String[] strings) {
+        if(!(sender instanceof Player)) return false;
 
         try {
             worldData.revert_blocks();

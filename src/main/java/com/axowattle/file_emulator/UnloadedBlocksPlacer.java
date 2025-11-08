@@ -7,6 +7,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 
 import java.util.Queue;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class UnloadedBlocksPlacer implements Listener {
     private final WorldData world_data;
 

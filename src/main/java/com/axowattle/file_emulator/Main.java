@@ -1,11 +1,12 @@
 package com.axowattle.file_emulator;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
-    private final long NANOSECONDS_PER_MILLISECONDS = 1_000_000;
+    private static final long NANOSECONDS_PER_MILLISECONDS = 1_000_000;
 
     BlockPlacer placer;
     BlockNotifier notifier;
@@ -19,8 +20,12 @@ public final class Main extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, placer, 1, 1);
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, notifier, 1, 1);
 
-        getCommand("gen-files").setExecutor(new GenerateTreeCommand(world_data, notifier));
-        getCommand("delete-files").setExecutor(new DeleteTreeCommand(world_data));
+        PluginCommand get_file_command = getCommand("gen-files");
+        if (get_file_command == null) throw new RuntimeException("Cannot find gen-files command");
+        get_file_command.setExecutor(new GenerateTreeCommand(world_data, notifier));
+        PluginCommand delete_file_command = getCommand("delete-files");
+        if (delete_file_command == null) throw new RuntimeException("Cannot find delete-files command");
+        delete_file_command.setExecutor(new DeleteTreeCommand(world_data));
 
 
         PluginManager pm = Bukkit.getPluginManager();
